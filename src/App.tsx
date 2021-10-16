@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC } from "react";
+import { Button, Box, Grid, useMediaQuery } from "@mui/material";
+import { useAppSelector } from "./hooks/useAppSelector";
+import { useAppDispatch } from "./hooks/useAppDispatch";
+import { selectApp, setIsModal } from "./redux/reducers/app";
+import OrdersList from "./components/List/OrdersList";
+import OrderModal from "./components/Modals/OrderModal";
 
-function App() {
+const App: FC = () => {
+  const { isModal } = useAppSelector(selectApp);
+
+  const dispatch = useAppDispatch();
+
+  const isSmall = useMediaQuery("(min-width: 360px)");
+  const isMedium = useMediaQuery("(min-width: 500px)");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Grid container direction="column" maxWidth={1300}>
+      <Box p={2}>
+        <Button
+          fullWidth
+          variant="contained"
+          size={isSmall ? "large" : "medium"}
+          onClick={() => dispatch(setIsModal(true))}
+          sx={{
+            "@media (min-width: 411px)": { fontSize: "18px", height: "60px" },
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          Vytvořit novou objednávku
+        </Button>
+      </Box>
+      {isModal && <OrderModal />}
+      <OrdersList isMedium={isMedium} />
+    </Grid>
   );
-}
+};
 
 export default App;
